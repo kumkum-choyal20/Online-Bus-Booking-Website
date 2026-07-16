@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BusGo — Online Bus Booking</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="#">
+      <span class="brand-icon">🚌</span> BusGo
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav ms-auto align-items-center gap-2">
+        <li class="nav-item"><a class="nav-link" href="#search-section">Book</a></li>
+        <li class="nav-item"><a class="nav-link" href="#routes-section">Routes</a></li>
+        <li class="nav-item"><a class="nav-link" href="#how-section">How It Works</a></li>
+        <li class="nav-item"><button class="btn btn-outline-primary btn-sm px-3" onclick="openModal('loginModal')">Login</button></li>
+        <li class="nav-item"><button class="btn btn-primary btn-sm px-3" onclick="openModal('registerModal')">Sign Up</button></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero-section" id="hero">
+  <div class="hero-bg-shapes">
+    <div class="shape shape-1"></div>
+    <div class="shape shape-2"></div>
+    <div class="shape shape-3"></div>
+  </div>
+  <div class="container">
+    <div class="row align-items-center min-vh-100 pt-5">
+      <div class="col-lg-6 hero-text">
+        <div class="badge-pill mb-3">🛣️ India's Smartest Bus Network</div>
+        <h1 class="hero-title">Travel Smarter.<br><span class="highlight">Book Faster.</span></h1>
+        <p class="hero-sub">Thousands of routes. Instant confirmation. Safe and comfortable buses across 500+ cities.</p>
+        <div class="hero-stats d-flex gap-4 mt-4">
+          <div class="stat-item"><div class="stat-num" data-count="500">0</div><div class="stat-label">Cities</div></div>
+          <div class="stat-item"><div class="stat-num" data-count="2000">0</div><div class="stat-label">Buses Daily</div></div>
+          <div class="stat-item"><div class="stat-num" data-count="120">0</div><div class="stat-label">Partners</div></div>
+        </div>
+      </div>
+      <div class="col-lg-6 d-none d-lg-flex justify-content-center">
+        <div class="bus-illustration">
+          <div class="bus-emoji">🚌</div>
+          <div class="road-line"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SEARCH SECTION -->
+<section class="search-section" id="search-section">
+  <div class="container">
+    <div class="search-card">
+      <div class="search-tabs mb-4">
+        <button class="tab-btn active" onclick="setTripType('one-way', this)">One Way</button>
+        <button class="tab-btn" onclick="setTripType('round-trip', this)">Round Trip</button>
+      </div>
+      <form onsubmit="searchBuses(event)">
+        <div class="row g-3 align-items-end">
+          <div class="col-md-3">
+            <label class="form-label">From</label>
+            <div class="input-icon-wrap">
+              <span class="inp-icon">📍</span>
+              <input type="text" class="form-control custom-input" id="fromCity" placeholder="Departure city" list="cityList" required/>
+            </div>
+          </div>
+          <div class="col-md-1 text-center">
+            <button type="button" class="swap-btn" onclick="swapCities()" title="Swap">⇄</button>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">To</label>
+            <div class="input-icon-wrap">
+              <span class="inp-icon">🏁</span>
+              <input type="text" class="form-control custom-input" id="toCity" placeholder="Destination city" list="cityList" required/>
+            </div>
+          </div>
+          <div class="col-md-2">
+            <label class="form-label">Date</label>
+            <div class="input-icon-wrap">
+              <span class="inp-icon">📅</span>
+              <input type="date" class="form-control custom-input" id="travelDate" required/>
+            </div>
+          </div>
+          <div class="col-md-1">
+            <label class="form-label">Seats</label>
+            <select class="form-select custom-input" id="seatCount">
+              <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+            </select>
+          </div>
+          <div class="col-md-2">
+            <button type="submit" class="btn btn-primary w-100 search-btn">Search 🔍</button>
+          </div>
+        </div>
+      </form>
+      <datalist id="cityList">
+        <option value="Mumbai"><option value="Delhi"><option value="Bangalore"><option value="Hyderabad">
+        <option value="Pune"><option value="Chennai"><option value="Ahmedabad"><option value="Jaipur">
+        <option value="Kolkata"><option value="Indore"><option value="Bhopal"><option value="Nagpur">
+        <option value="Surat"><option value="Lucknow"><option value="Chandigarh"><option value="Kochi">
+        <option value="Goa"><option value="Mysore"><option value="Udaipur"><option value="Varanasi">
+      </datalist>
+    </div>
+  </div>
+</section>
+
+<!-- SEARCH RESULTS -->
+<section class="results-section" id="resultsSection" style="display:none;">
+  <div class="container">
+    <div class="results-header">
+      <h3 id="resultsTitle">Available Buses</h3>
+      <div class="filter-row d-flex gap-2 flex-wrap align-items-center">
+        <button class="filter-btn active" onclick="filterBuses('all', this)">All</button>
+        <button class="filter-btn" onclick="filterBuses('ac', this)">AC</button>
+        <button class="filter-btn" onclick="filterBuses('sleeper', this)">Sleeper</button>
+        <button class="filter-btn" onclick="filterBuses('volvo', this)">Volvo</button>
+        <div class="ms-auto">
+          <select class="form-select form-select-sm" onchange="sortBuses(this.value)">
+            <option value="price">Sort: Price ↑</option>
+            <option value="duration">Sort: Duration</option>
+            <option value="rating">Sort: Rating</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div id="busList" class="bus-list"></div>
+  </div>
+</section>
+
+<!-- POPULAR ROUTES -->
+<section class="routes-section" id="routes-section">
+  <div class="container">
+    <div class="section-header text-center">
+      <div class="section-tag">Trending Now</div>
+      <h2>Popular Routes</h2>
+      <p>Most booked destinations this week</p>
+    </div>
+    <div class="row g-4" id="routesGrid"></div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-section" id="how-section">
+  <div class="container">
+    <div class="section-header text-center">
+      <div class="section-tag">Simple and Fast</div>
+      <h2>How It Works</h2>
+    </div>
+    <div class="row g-4 justify-content-center align-items-center">
+      <div class="col-md-3 text-center step-card">
+        <div class="step-icon">🔍</div>
+        <div class="step-num">01</div>
+        <h5>Search</h5>
+        <p>Enter your source, destination and travel date to find available buses.</p>
+      </div>
+      <div class="col-md-1 text-center step-arrow d-none d-md-block">→</div>
+      <div class="col-md-3 text-center step-card">
+        <div class="step-icon">💺</div>
+        <div class="step-num">02</div>
+        <h5>Choose Seat</h5>
+        <p>Pick your preferred seat from the interactive seat map layout.</p>
+      </div>
+      <div class="col-md-1 text-center step-arrow d-none d-md-block">→</div>
+      <div class="col-md-3 text-center step-card">
+        <div class="step-icon">💳</div>
+        <div class="step-num">03</div>
+        <h5>Pay and Confirm</h5>
+        <p>Complete secure payment and receive instant e-ticket on your email.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonial-section">
+  <div class="container">
+    <div class="section-header text-center">
+      <div class="section-tag">What Travelers Say</div>
+      <h2>Real Reviews</h2>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-4"><div class="review-card"><div class="stars">★★★★★</div><p>"Super easy to book! Got my ticket in under 2 minutes. Loved the seat selection feature."</p><div class="reviewer">— Priya M., Mumbai</div></div></div>
+      <div class="col-md-4"><div class="review-card featured"><div class="stars">★★★★★</div><p>"Best bus booking platform. Clean UI, instant confirmation and very affordable prices!"</p><div class="reviewer">— Rahul K., Pune</div></div></div>
+      <div class="col-md-4"><div class="review-card"><div class="stars">★★★★☆</div><p>"Finally a bus booking site that actually works well on mobile. Very happy with the service."</p><div class="reviewer">— Ananya S., Bangalore</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-lg-4">
+        <div class="footer-brand">🚌 BusGo</div>
+        <p class="footer-desc">India's most trusted online bus booking platform. Safe, affordable, and always on time.</p>
+        <div class="social-links">
+          <a href="#">FB</a><a href="#">TW</a><a href="#">IG</a><a href="#">YT</a>
+        </div>
+      </div>
+      <div class="col-lg-2">
+        <h6>Company</h6>
+        <ul class="footer-links"><li><a href="#">About Us</a></li><li><a href="#">Careers</a></li><li><a href="#">Press</a></li><li><a href="#">Blog</a></li></ul>
+      </div>
+      <div class="col-lg-2">
+        <h6>Support</h6>
+        <ul class="footer-links"><li><a href="#">Help Center</a></li><li><a href="#">Cancellation</a></li><li><a href="#">Track Booking</a></li><li><a href="#">Contact Us</a></li></ul>
+      </div>
+      <div class="col-lg-4">
+        <h6>Newsletter</h6>
+        <p>Get exclusive deals in your inbox.</p>
+        <div class="newsletter-form">
+          <input type="email" placeholder="your@email.com" class="form-control mb-2"/>
+          <button class="btn btn-primary w-100">Subscribe</button>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 BusGo. All rights reserved.</span>
+      <span>Privacy Policy · Terms of Service</span>
+    </div>
+  </div>
+</footer>
+
+<!-- SEAT SELECTION MODAL -->
+<div class="modal-overlay" id="seatModal" onclick="closeModalOnOverlay(event, 'seatModal')">
+  <div class="modal-box large" onclick="event.stopPropagation()">
+    <div class="modal-header-custom">
+      <h4 id="seatModalTitle">Select Your Seat</h4>
+      <button class="modal-close" onclick="closeModal('seatModal')">✕</button>
+    </div>
+    <div class="modal-body-custom">
+      <div class="row">
+        <div class="col-md-7">
+          <div class="bus-layout-container">
+            <div class="bus-front">🚌 Driver</div>
+            <div class="seat-grid" id="seatGrid"></div>
+            <div class="seat-legend d-flex gap-3 mt-3 flex-wrap">
+              <span><span class="seat-dot available"></span> Available</span>
+              <span><span class="seat-dot selected"></span> Selected</span>
+              <span><span class="seat-dot booked"></span> Booked</span>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-5">
+          <div class="booking-summary">
+            <h5>Booking Summary</h5>
+            <div class="summary-line"><span>Bus:</span><span id="sumBus">—</span></div>
+            <div class="summary-line"><span>Route:</span><span id="sumRoute">—</span></div>
+            <div class="summary-line"><span>Date:</span><span id="sumDate">—</span></div>
+            <div class="summary-line"><span>Seats:</span><span id="sumSeats">None</span></div>
+            <div class="summary-line total"><span>Total:</span><span id="sumTotal">₹0</span></div>
+            <div class="mt-3">
+              <label class="form-label">Passenger Name</label>
+              <input type="text" class="form-control custom-input mb-2" id="passengerName" placeholder="Full name"/>
+              <label class="form-label">Phone</label>
+              <input type="tel" class="form-control custom-input mb-2" id="passengerPhone" placeholder="+91 XXXXXXXXXX"/>
+              <label class="form-label">Email</label>
+              <input type="email" class="form-control custom-input mb-3" id="passengerEmail" placeholder="email@example.com"/>
+              <button class="btn btn-primary w-100" onclick="proceedToPayment()">Proceed to Payment 💳</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PAYMENT MODAL -->
+<div class="modal-overlay" id="paymentModal" onclick="closeModalOnOverlay(event, 'paymentModal')">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-header-custom">
+      <h4>Secure Payment</h4>
+      <button class="modal-close" onclick="closeModal('paymentModal')">✕</button>
+    </div>
+    <div class="modal-body-custom">
+      <div class="payment-amount mb-4 text-center">
+        <div class="pay-label">Total Amount</div>
+        <div class="pay-amount" id="payAmount">₹0</div>
+      </div>
+      <div class="payment-methods mb-4">
+        <label class="pay-method active" id="pm-card" onclick="selectPayMethod('card')">💳 Credit/Debit Card</label>
+        <label class="pay-method" id="pm-upi" onclick="selectPayMethod('upi')">📱 UPI</label>
+        <label class="pay-method" id="pm-netbank" onclick="selectPayMethod('netbank')">🏦 Net Banking</label>
+      </div>
+      <div id="payFormCard">
+        <input class="form-control custom-input mb-2" placeholder="Card Number (16 digits)" maxlength="19" oninput="formatCard(this)"/>
+        <div class="row g-2">
+          <div class="col-6"><input class="form-control custom-input" placeholder="MM/YY" maxlength="5"/></div>
+          <div class="col-6"><input class="form-control custom-input" placeholder="CVV" maxlength="3" type="password"/></div>
+        </div>
+        <input class="form-control custom-input mt-2" placeholder="Cardholder Name"/>
+      </div>
+      <div id="payFormUpi" style="display:none;">
+        <input class="form-control custom-input" placeholder="Enter UPI ID (e.g., name@upi)"/>
+      </div>
+      <div id="payFormNetbank" style="display:none;">
+        <select class="form-select custom-input">
+          <option>Select Bank</option>
+          <option>SBI</option><option>HDFC</option><option>ICICI</option><option>Axis</option><option>Kotak</option>
+        </select>
+      </div>
+      <button class="btn btn-primary w-100 mt-4" onclick="confirmPayment()">Pay Now 🔒</button>
+      <p class="text-center text-muted mt-2" style="font-size:12px;">🔒 256-bit SSL Encrypted</p>
+    </div>
+  </div>
+</div>
+
+<!-- SUCCESS MODAL -->
+<div class="modal-overlay" id="successModal" onclick="closeModalOnOverlay(event, 'successModal')">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-body-custom text-center py-4">
+      <div class="success-anim">✅</div>
+      <h3 class="mt-3">Booking Confirmed!</h3>
+      <p>Your e-ticket has been sent to your email.</p>
+      <div class="ticket-card" id="ticketCard"></div>
+      <button class="btn btn-primary mt-3" onclick="closeModal('successModal'); resetAll()">Book Another Trip</button>
+    </div>
+  </div>
+</div>
+
+<!-- LOGIN MODAL -->
+<div class="modal-overlay" id="loginModal" onclick="closeModalOnOverlay(event, 'loginModal')">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-header-custom">
+      <h4>Welcome Back</h4>
+      <button class="modal-close" onclick="closeModal('loginModal')">✕</button>
+    </div>
+    <div class="modal-body-custom">
+      <input class="form-control custom-input mb-3" placeholder="Email or Phone"/>
+      <input class="form-control custom-input mb-3" type="password" placeholder="Password"/>
+      <button class="btn btn-primary w-100" onclick="loginUser()">Login</button>
+      <p class="text-center mt-3" style="font-size:13px;">No account? <a href="#" onclick="closeModal('loginModal'); openModal('registerModal')">Sign Up</a></p>
+    </div>
+  </div>
+</div>
+
+<!-- REGISTER MODAL -->
+<div class="modal-overlay" id="registerModal" onclick="closeModalOnOverlay(event, 'registerModal')">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-header-custom">
+      <h4>Create Account</h4>
+      <button class="modal-close" onclick="closeModal('registerModal')">✕</button>
+    </div>
+    <div class="modal-body-custom">
+      <input class="form-control custom-input mb-3" placeholder="Full Name"/>
+      <input class="form-control custom-input mb-3" placeholder="Email"/>
+      <input class="form-control custom-input mb-3" placeholder="Phone Number"/>
+      <input class="form-control custom-input mb-3" type="password" placeholder="Password"/>
+      <button class="btn btn-primary w-100" onclick="registerUser()">Create Account</button>
+      <p class="text-center mt-3" style="font-size:13px;">Have an account? <a href="#" onclick="closeModal('registerModal'); openModal('loginModal')">Login</a></p>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
